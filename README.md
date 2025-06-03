@@ -1,4 +1,4 @@
-# Memoria-e-Contador
+# Memoria e Contador
 
 Este repositório contém projetos desenvolvidos em Verilog para simulação e implementação de um contador e de módulos de memória. O objetivo é demonstrar conceitos fundamentais de eletrônica digital utilizando a linguagem de descrição de hardware Verilog.
 
