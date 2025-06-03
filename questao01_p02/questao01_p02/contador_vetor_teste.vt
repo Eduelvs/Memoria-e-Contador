@@ -1,0 +1,116 @@
+`timescale 1 ps/ 1 ps
+module contador_vetor_teste();
+
+reg F;
+reg clk;
+reg clr;
+
+wire qa;
+wire qb;
+wire qc;
+
+reg  [2:0] conta_anterior;
+wire [2:0] conta_atual;
+
+contador i1 (
+	.F(F),
+	.clk(clk),
+	.clr(clr),
+	.qa(qa),
+	.qb(qb),
+	.qc(qc)
+);
+
+
+assign conta_atual = {qc,qb,qa};
+
+initial 
+$timeformat(-6, 2, "us", 20);
+
+// clk
+always
+begin
+	clk = 1'b0;
+	clk = #50000 1'b1;
+	#50000;
+end 
+
+// clr
+initial
+begin
+	clr = 1'b0;
+	clr = #25000 1'b1;
+end 
+
+// F
+initial
+begin
+	F = 1'b0;
+	F = #1175000 1'b1;
+	F = #1050000 1'b0;
+	F = #750000 1'b1;
+	F = #250000 1'b0;
+	F = #950000 1'b1;
+	F = #1250000 1'b0;
+end 
+
+
+always @(negedge clk or negedge clr)
+begin
+	if (clr == 1'b0)
+		conta_anterior = 3'b000;
+	else 
+		case(conta_anterior)
+			3'b000: 
+			begin
+				if({qc,qb,qa} == 3'b101)
+					conta_anterior = 3'b101;
+				else $display("Erro em %3t. Esperado 101. Valor obtido %b", $time, {qc,qb,qa});
+			end
+			3'b101: 
+			begin
+				if({qc,qb,qa} == 3'b111)
+					conta_anterior = 3'b111;
+				else $display("Erro em %3t. Esperado 111. Valor obtido %b", $time, {qc,qb,qa});
+			end
+			3'b111:
+			begin
+				if(F == 1'b0)
+					if({qc,qb,qa} == 3'b100)
+						conta_anterior = 3'b100;
+					else $display("Erro em %3t. Esperado 100. Valor obtido %b", $time, {qc,qb,qa});
+				else 
+					if({qc,qb,qa} == 3'b111)
+						conta_anterior = 3'b111;
+					else $display("Erro em %3t. Esperado 111. Valor obtido %b", $time, {qc,qb,qa});
+			end
+			3'b100:
+			begin
+				if({qc,qb,qa} == 3'b011)
+					conta_anterior = 3'b011;
+				else $display("Erro em %3t. Esperado 011. Valor obtido %b", $time, {qc,qb,qa});
+			end
+			3'b011:
+			begin
+				if({qc,qb,qa} == 3'b010)
+					conta_anterior = 3'b010;
+				else $display("Erro em %3t. Esperado 010. Valor obtido %b", $time, {qc,qb,qa});
+			end
+			3'b010:
+			begin
+				if({qc,qb,qa} == 3'b001)
+					conta_anterior = 3'b001;
+				else $display("Erro em %3t. Esperado 001. Valor obtido %b", $time, {qc,qb,qa});
+			end
+			3'b001:
+			begin
+				if({qc,qb,qa} == 3'b101)
+					conta_anterior = 3'b101;
+				else $display("Erro em %3t. Esperado 101. Valor obtido %b", $time, {qc,qb,qa});
+			end
+			default: $display("Erro inesperado em %3t. Valor obtido %b", $time, {qc,qb,qa});
+		endcase
+end
+  
+endmodule
+

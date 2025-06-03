@@ -1,0 +1,700 @@
+`timescale 1 ps/ 1 ps
+module mem_s_vetor_teste();
+
+reg [6:0] sA;
+reg sCE;
+reg [4:0] treg_sD;
+reg sRnW;
+
+wire [4:0] sD;
+
+wire [3:0] habilitacoes;
+
+assign habilitacoes = {mem_s_vetor_teste.i1.b2v_inst1.ance, mem_s_vetor_teste.i1.b2v_inst2.bce, mem_s_vetor_teste.i1.b2v_inst.cnr, mem_s_vetor_teste.i1.b2v_inst.cnw};
+
+reg [1:0] sequencia;
+
+assign sD = treg_sD;
+
+mem_s i1 (
+	.sA(sA),
+	.sCE(sCE),
+	.sD(sD),
+	.sRnW(sRnW)
+);
+
+always @(sA or sCE or sD or sRnW)
+begin
+//	#100;
+	if (sCE === 1'b0)
+	begin
+		case(habilitacoes)
+		4'b0000: $display("Erro habilitacao memoria: RAM-A habilitada e RAM-C na posicao 00. Endereco %h (%3t)", sA, $time);
+		4'b0001: $display("Erro habilitacao memoria: RAM-A habilitada e RAM-C na posicao de leitura. Endereco %h (%3t)", sA, $time);
+		4'b0010: $display("Erro habilitacao memoria: RAM-A habilitada e RAM-C na posicao de escrita. Endereco %h (%3t)", sA, $time);
+		4'b0011: $display("Erro habilitacao memoria: RAM-A habilitada. Endereco %h (%3t)", sA, $time);
+		4'b0100: $display("Erro habilitacao memoria: RAM-A habilitada, RAM-B habilitada e RAM-C na posicao 00. Endereco %h (%3t)", sA, $time);
+		4'b0101: $display("Erro habilitacao memoria: RAM-A habilitada, RAM-B habilitada e RAM-C na posicao de leitura. Endereco %h (%3t)", sA, $time);
+		4'b0110: $display("Erro habilitacao memoria: RAM-A habilitada, RAM-B habilitada e RAM-C na posicao de escrita. Endereco %h (%3t)", sA, $time);
+		4'b0111: $display("Erro habilitacao memoria: RAM-A habilitada e RAM-B habilitada. Endereco %h (%3t)", sA, $time);
+		4'b1000: $display("Erro habilitacao memoria: RAM-C na posicao 00. Endereco %h (%3t)", sA, $time);
+		4'b1001: $display("Erro habilitacao memoria: RAM-C na posicao de leitura. Endereco %h (%3t)", sA, $time);
+		4'b1010: $display("Erro habilitacao memoria: RAM-C na posicao de escrita. Endereco %h (%3t)", sA, $time);
+//		4'b1011: 
+		4'b1100: $display("Erro habilitacao memoria: RAM-B habilitada e RAM-C na posicao 00. Endereco %h (%3t)", sA, $time);
+		4'b1101: $display("Erro habilitacao memoria: RAM-B habilitada e RAM-C na posicao de leitura. Endereco %h (%3t)", sA, $time);
+		4'b1110: $display("Erro habilitacao memoria: RAM-B habilitada e RAM-C na posicao de escrita. Endereco %h (%3t)", sA, $time);
+		4'b1111: $display("Erro habilitacao memoria: RAM-B habilitada. Endereco %h (%3t)", sA, $time);
+//		default: $display("Erro desconhecido em %3t", $time);
+		endcase		
+	end
+	else
+	begin
+		case(habilitacoes)
+		4'b0000: $display("Erro habilitacao memoria: RAM-A habilitada, RAM-B desabilitada e RAM-C na posicao 00. Endereco %h (%3t)", sA, $time);
+		4'b0001: $display("Erro habilitacao memoria: RAM-A habilitada, RAM-B desabilitada e RAM-C na posicao de leitura. Endereco %h (%3t)", sA, $time);
+		4'b0010: $display("Erro habilitacao memoria: RAM-A habilitada, RAM-B desabilitada e RAM-C na posicao de escrita. Endereco %h (%3t)", sA, $time);
+//		4'b0011: 
+		4'b0100: $display("Erro habilitacao memoria: RAM-A habilitada, RAM-B habilitada e RAM-C na posicao 00. Endereco %h (%3t)", sA, $time);
+		4'b0101: $display("Erro habilitacao memoria: RAM-A habilitada, RAM-B habilitada e RAM-C na posicao de leitura. Endereco %h (%3t)", sA, $time);
+		4'b0110: $display("Erro habilitacao memoria: RAM-A habilitada, RAM-B habilitada e RAM-C na posicao de escrita. Endereco %h (%3t)", sA, $time);
+		4'b0111: $display("Erro habilitacao memoria: RAM-A habilitada e RAM-B habilitada e RAM-C desabilitada. Endereco %h (%3t)", sA, $time);
+		4'b1000: $display("Erro habilitacao memoria: RAM-A desabilitada, RAM-B desabilitada e RAM-C na posicao 00. Endereco %h (%3t)", sA, $time);
+//		4'b1001: 
+//		4'b1010: 
+		4'b1011: 
+		begin
+			if(sA <= 7'b1001111)
+			$display("Erro habilitacao memoria: Nenhuma memoria habilitada. Endereco %h (%3t)", sA, $time);
+		end
+		4'b1100: $display("Erro habilitacao memoria: RAM-A desabilitada, RAM-B habilitada e RAM-C na posicao 00. Endereco %h (%3t)", sA, $time);
+		4'b1101: $display("Erro habilitacao memoria: RAM-A desabilitada, RAM-B habilitada e RAM-C na posicao de leitura. Endereco %h (%3t)", sA, $time);
+		4'b1110: $display("Erro habilitacao memoria: RAM-A desabilitada, RAM-B habilitada e RAM-C na posicao de escrita. Endereco %h (%3t)", sA, $time);
+//		4'b1111: 
+//		default: $display("Erro desconhecido em %3t", $time);
+		endcase		
+	end
+end
+
+always @(sA or sCE or sD or sRnW)
+begin
+	#100;
+	case(sequencia)
+	2'b00: 
+	begin
+		if (sCE === 1'b1)
+		begin
+			if (sRnW === 1'b1)
+			begin
+				if (sA <= 7'b1001111)
+				begin
+					if (sD !== 5'b11110)
+						$display("Sequencia 0 (Memoria habilitada): Erro na leitura da memoria no endereco %h. Valor lido foi %h. Valor esperado era 1E (%3t)", sA, sD, $time);
+				end
+				else
+				begin
+					if (sD !== 5'bzzzzz)
+						$display("Sequencia 0 (Memoria habilitada): Erro na leitura da memoria no endereco %h. Valor lido foi %h. Valor esperado era ZZ (%3t)", sA, sD, $time);
+				end
+			end
+		end
+		else 
+		begin
+			if (sRnW === 1'b1)
+			begin
+				if (sD !== 5'bzzzzz)
+					$display("Sequencia 0 (Memoria desabilitada): Erro na leitura da memoria no endereco %h. Valor lido foi %h. Valor esperado era ZZ (%3t)", sA, sD, $time);		
+			end
+		end
+	end
+	2'b01: 
+	begin
+		if (sCE === 1'b1)
+		begin
+			if (sRnW === 1'b1)
+			begin
+				if (sA <= 7'b1001111)
+				begin
+					if (sD !== sA[4:0])
+						$display("Sequencia 1 (Memoria habilitada): Erro na leitura da memoria no endereco %h. Valor lido foi %h. Valor esperado era %h (%3t)", sA, sD, sA[4:0], $time);
+				end
+				else 
+				begin
+					if (sD !== 5'bzzzzz)	
+						$display("Sequencia 1 (Memoria habilitada): Erro na leitura da memoria no endereco %h. Valor lido foi %h. Valor esperado era ZZ (%3t)", sA, sD, sA[4:0], $time);
+				end
+			end
+		end
+		else 
+		begin
+			if (sRnW === 1'b1)
+			begin
+				if (sD !== 5'bzzzzz)
+					$display("Sequencia 1 (Memoria desabilitada): Erro na leitura da memoria no endereco %h. Valor lido foi %h. Valor esperado era ZZ (%3t)", sA, sD, $time);		
+			end
+		end
+	end
+	2'b10: 
+	begin
+		if (sCE === 1'b0)
+		begin
+			if ((sRnW === 1'b1) && (sD !== 5'bzzzzz))
+				$display("Sequencia 2 (Memoria desabilitada): Erro na leitura da memoria no endereco %h. Valor lido foi %h. Valor esperado era ZZ (%3t)", sA, sD, $time);		
+		end
+		else 
+			$display("Sequencia 2 (Memoria habilitada): Erro na leitura da memoria no endereco %h. Valor lido foi %h. Valor esperado era ZZ (%3t)", sA, sD, $time);
+	end
+	2'b11: 
+	begin
+		if (sCE === 1'b1)
+		begin
+			if (sRnW === 1'b1)
+			begin
+				if (sA <= 7'b1001111)
+				begin
+					if (sD !== sA[4:0])
+						$display("Sequencia 3 (Memoria habilitada): Erro na leitura da memoria no endereco %h. Valor lido foi %h. Valor esperado era %h (%3t)", sA, sD, sA[4:0], $time);
+				end
+				else 
+				begin
+					if (sD !== 5'bzzzzz)	
+						$display("Sequencia 3 (Memoria habilitada): Erro na leitura da memoria no endereco %h. Valor lido foi %h. Valor esperado era ZZ (%3t)", sA, sD, sA[4:0], $time);
+				end
+			end
+		end
+		else 
+		begin
+			if (sRnW === 1'b1)
+			begin
+				if (sD !== 5'bzzzzz)
+					$display("Sequencia 3 (Memoria desabilitada): Erro na leitura da memoria no endereco %h. Valor lido foi %h. Valor esperado era ZZ (%3t)", sA, sD, $time);		
+			end
+		end
+	end
+	default: $display("Erro desconhecido em %3t", $time);
+	endcase		
+end
+
+initial 
+begin 
+$timeformat(-6, 3, "us", 20);
+sequencia = 2'b00; 
+#38400000 sequencia = 2'b01;
+#25600000 sequencia = 2'b10;
+#12800000 sequencia = 2'b11;
+#89600000 $stop;
+end 
+
+
+// sA[6]
+initial
+begin
+	repeat(2)
+	begin
+		sA[6] = 1'b0;
+		sA[6] = #6400000 1'b1;
+		# 6400000;
+	end
+	sA[6] = 1'b0;
+	sA[6] = #6400000 1'b1;
+	sA[6] = #6400000 1'b0;
+	sA[6] = #6400000 1'b1;
+	sA[6] = #6400000 1'b0;
+	sA[6] = #6400000 1'b1;
+	# 6400000;
+	repeat(2)
+	begin
+		sA[6] = 1'b0;
+		sA[6] = #6400000 1'b1;
+		# 6400000;
+	end
+end 
+
+// sA[5]
+initial
+begin
+	repeat(4)
+	begin
+		sA[5] = 1'b0;
+		sA[5] = #3200000 1'b1;
+		# 3200000;
+	end
+	sA[5] = 1'b0;
+	sA[5] = #3200000 1'b1;
+	# 3200000;
+	repeat(4)
+	begin
+		sA[5] = 1'b0;
+		sA[5] = #3200000 1'b1;
+		# 3200000;
+	end
+	sA[5] = 1'b0;
+	sA[5] = #3200000 1'b1;
+	# 3200000;
+	repeat(4)
+	begin
+		sA[5] = 1'b0;
+		sA[5] = #3200000 1'b1;
+		# 3200000;
+	end
+end 
+
+// sA[4]
+initial
+begin
+	repeat(8)
+	begin
+		sA[4] = 1'b0;
+		sA[4] = #1600000 1'b1;
+		# 1600000;
+	end
+	sA[4] = 1'b0;
+	sA[4] = #1600000 1'b1;
+	sA[4] = #1600000 1'b0;
+	sA[4] = #1600000 1'b1;
+	# 1600000;
+	repeat(9)
+	begin
+		sA[4] = 1'b0;
+		sA[4] = #1600000 1'b1;
+		# 1600000;
+	end
+	sA[4] = 1'b0;
+	sA[4] = #1600000 1'b1;
+	# 1600000;
+	repeat(8)
+	begin
+		sA[4] = 1'b0;
+		sA[4] = #1600000 1'b1;
+		# 1600000;
+	end
+end 
+
+// sA[3]
+initial
+begin
+	repeat(17)
+	begin
+		sA[3] = 1'b0;
+		sA[3] = #800000 1'b1;
+		# 800000;
+	end
+	sA[3] = 1'b0;
+	sA[3] = #800000 1'b1;
+	sA[3] = #800000 1'b0;
+	sA[3] = #800000 1'b1;
+	# 800000;
+	repeat(20)
+	begin
+		sA[3] = 1'b0;
+		sA[3] = #800000 1'b1;
+		# 800000;
+	end
+	sA[3] = 1'b0;
+	sA[3] = #800000 1'b1;
+	# 800000;
+	repeat(16)
+	begin
+		sA[3] = 1'b0;
+		sA[3] = #800000 1'b1;
+		# 800000;
+	end
+end 
+
+// sA[2]
+initial
+begin
+	repeat(35)
+	begin
+		sA[2] = 1'b0;
+		sA[2] = #400000 1'b1;
+		# 400000;
+	end
+	sA[2] = 1'b0;
+	sA[2] = #400000 1'b1;
+	sA[2] = #400000 1'b0;
+	sA[2] = #400000 1'b1;
+	# 400000;
+	repeat(42)
+	begin
+		sA[2] = 1'b0;
+		sA[2] = #400000 1'b1;
+		# 400000;
+	end
+	sA[2] = 1'b0;
+	sA[2] = #400000 1'b1;
+	# 400000;
+	repeat(32)
+	begin
+		sA[2] = 1'b0;
+		sA[2] = #400000 1'b1;
+		# 400000;
+	end
+end 
+
+// sA[1]
+initial
+begin
+	repeat(71)
+	begin
+		sA[1] = 1'b0;
+		sA[1] = #200000 1'b1;
+		# 200000;
+	end
+	sA[1] = 1'b0;
+	sA[1] = #200000 1'b1;
+	sA[1] = #200000 1'b0;
+	sA[1] = #200000 1'b1;
+	# 200000;
+	repeat(86)
+	begin
+		sA[1] = 1'b0;
+		sA[1] = #200000 1'b1;
+		# 200000;
+	end
+	sA[1] = 1'b0;
+	sA[1] = #200000 1'b1;
+	# 200000;
+	repeat(64)
+	begin
+		sA[1] = 1'b0;
+		sA[1] = #200000 1'b1;
+		# 200000;
+	end
+end 
+
+// sA[0]
+initial
+begin
+	repeat(143)
+	begin
+		sA[0] = 1'b0;
+		sA[0] = #100000 1'b1;
+		# 100000;
+	end
+	sA[0] = 1'b0;
+	sA[0] = #100000 1'b1;
+	sA[0] = #100000 1'b0;
+	sA[0] = #100000 1'b1;
+	# 100000;
+	repeat(174)
+	begin
+		sA[0] = 1'b0;
+		sA[0] = #100000 1'b1;
+		# 100000;
+	end
+	sA[0] = 1'b0;
+	sA[0] = #100000 1'b1;
+	# 100000;
+	repeat(128)
+	begin
+		sA[0] = 1'b0;
+		sA[0] = #100000 1'b1;
+		# 100000;
+	end
+end 
+
+// sCE
+initial
+begin
+	sCE = 1'b0;
+	sCE = #35000 1'b1;
+	sCE = #60000 1'b0;
+	# 40000;
+	repeat(126)
+	begin
+		sCE = 1'b1;
+		sCE = #60000 1'b0;
+		# 40000;
+	end
+	sCE = 1'b1;
+	sCE = #40000 1'b0;
+	sCE = #50000 1'b1;
+	sCE = #12725000 1'b0;
+	sCE = #85000 1'b1;
+	sCE = #60000 1'b0;
+	# 40000;
+	repeat(126)
+	begin
+		sCE = 1'b1;
+		sCE = #60000 1'b0;
+		# 40000;
+	end
+	sCE = 1'b1;
+	sCE = #40000 1'b0;
+	sCE = #60000 1'b1;
+	sCE = #60000 1'b0;
+	# 40000;
+	repeat(126)
+	begin
+		sCE = 1'b1;
+		sCE = #60000 1'b0;
+		# 40000;
+	end
+	sCE = 1'b1;
+	sCE = #40000 1'b0;
+	sCE = #25660000 1'b1;
+	sCE = #60000 1'b0;
+	# 40000;
+	repeat(126)
+	begin
+		sCE = 1'b1;
+		sCE = #60000 1'b0;
+		# 40000;
+	end
+	sCE = 1'b1;
+	sCE = #60000 1'b0;
+end 
+
+// sRnW
+initial
+begin
+	sRnW = 1'b0;
+	sRnW = #12810000 1'b1;
+	sRnW = #12760000 1'b0;
+	sRnW = #12840000 1'b1;
+	sRnW = #12780000 1'b0;
+	sRnW = #12840000 1'b1;
+end 
+
+// sD[4]
+initial
+begin
+	treg_sD[4] = 1'b1;
+	treg_sD[4] = #12785000 1'bZ;
+	treg_sD[4] = #12840000 1'b0;
+	treg_sD[4] = #1600000 1'b1;
+	treg_sD[4] = #1600000 1'b0;
+	treg_sD[4] = #1600000 1'b1;
+	treg_sD[4] = #1600000 1'b0;
+	treg_sD[4] = #1600000 1'b1;
+	treg_sD[4] = #1600000 1'b0;
+	treg_sD[4] = #1600000 1'b1;
+	treg_sD[4] = #1565000 1'bZ;
+	treg_sD[4] = #12830000 1'b0;
+	treg_sD[4] = #12770000 1'bZ;
+end 
+
+// sD[3]
+initial
+begin
+	treg_sD[3] = 1'b1;
+	treg_sD[3] = #12785000 1'bZ;
+	treg_sD[3] = #12840000 1'b0;
+	treg_sD[3] = #800000 1'b1;
+	treg_sD[3] = #800000 1'b0;
+	treg_sD[3] = #800000 1'b1;
+	treg_sD[3] = #800000 1'b0;
+	treg_sD[3] = #800000 1'b1;
+	treg_sD[3] = #800000 1'b0;
+	treg_sD[3] = #800000 1'b1;
+	treg_sD[3] = #800000 1'b0;
+	treg_sD[3] = #800000 1'b1;
+	treg_sD[3] = #800000 1'b0;
+	treg_sD[3] = #800000 1'b1;
+	treg_sD[3] = #800000 1'b0;
+	treg_sD[3] = #800000 1'b1;
+	treg_sD[3] = #800000 1'b0;
+	treg_sD[3] = #800000 1'b1;
+	treg_sD[3] = #765000 1'bZ;
+	treg_sD[3] = #12830000 1'b0;
+	treg_sD[3] = #12770000 1'bZ;
+end 
+
+// sD[2]
+initial
+begin
+	treg_sD[2] = 1'b1;
+	treg_sD[2] = #12785000 1'bZ;
+	treg_sD[2] = #12840000 1'b0;
+	treg_sD[2] = #400000 1'b1;
+	treg_sD[2] = #400000 1'b0;
+	treg_sD[2] = #400000 1'b1;
+	treg_sD[2] = #400000 1'b0;
+	treg_sD[2] = #400000 1'b1;
+	treg_sD[2] = #400000 1'b0;
+	treg_sD[2] = #400000 1'b1;
+	treg_sD[2] = #400000 1'b0;
+	treg_sD[2] = #400000 1'b1;
+	treg_sD[2] = #400000 1'b0;
+	treg_sD[2] = #400000 1'b1;
+	treg_sD[2] = #400000 1'b0;
+	treg_sD[2] = #400000 1'b1;
+	treg_sD[2] = #400000 1'b0;
+	treg_sD[2] = #400000 1'b1;
+	treg_sD[2] = #400000 1'b0;
+	treg_sD[2] = #400000 1'b1;
+	treg_sD[2] = #400000 1'b0;
+	treg_sD[2] = #400000 1'b1;
+	treg_sD[2] = #400000 1'b0;
+	treg_sD[2] = #400000 1'b1;
+	# 400000;
+	repeat(4)
+	begin
+		treg_sD[2] = 1'b0;
+		treg_sD[2] = #400000 1'b1;
+		# 400000;
+	end
+	treg_sD[2] = 1'b0;
+	treg_sD[2] = #400000 1'b1;
+	treg_sD[2] = #365000 1'bZ;
+	treg_sD[2] = #12830000 1'b0;
+	treg_sD[2] = #12770000 1'bZ;
+end 
+
+// sD[1]
+initial
+begin
+	treg_sD[1] = 1'b1;
+	treg_sD[1] = #12785000 1'bZ;
+	treg_sD[1] = #12840000 1'b0;
+	treg_sD[1] = #200000 1'b1;
+	# 200000;
+	repeat(2)
+	begin
+		treg_sD[1] = 1'b0;
+		treg_sD[1] = #200000 1'b1;
+		# 200000;
+	end
+	treg_sD[1] = 1'b0;
+	treg_sD[1] = #200000 1'b1;
+	treg_sD[1] = #200000 1'b0;
+	treg_sD[1] = #200000 1'b1;
+	# 200000;
+	repeat(2)
+	begin
+		treg_sD[1] = 1'b0;
+		treg_sD[1] = #200000 1'b1;
+		# 200000;
+	end
+	treg_sD[1] = 1'b0;
+	treg_sD[1] = #200000 1'b1;
+	treg_sD[1] = #200000 1'b0;
+	treg_sD[1] = #200000 1'b1;
+	# 200000;
+	repeat(2)
+	begin
+		treg_sD[1] = 1'b0;
+		treg_sD[1] = #200000 1'b1;
+		# 200000;
+	end
+	treg_sD[1] = 1'b0;
+	treg_sD[1] = #200000 1'b1;
+	treg_sD[1] = #200000 1'b0;
+	treg_sD[1] = #200000 1'b1;
+	# 200000;
+	repeat(2)
+	begin
+		treg_sD[1] = 1'b0;
+		treg_sD[1] = #200000 1'b1;
+		# 200000;
+	end
+	treg_sD[1] = 1'b0;
+	treg_sD[1] = #200000 1'b1;
+	treg_sD[1] = #200000 1'b0;
+	treg_sD[1] = #200000 1'b1;
+	# 200000;
+	repeat(2)
+	begin
+		treg_sD[1] = 1'b0;
+		treg_sD[1] = #200000 1'b1;
+		# 200000;
+	end
+	treg_sD[1] = 1'b0;
+	treg_sD[1] = #200000 1'b1;
+	treg_sD[1] = #200000 1'b0;
+	treg_sD[1] = #200000 1'b1;
+	# 200000;
+	repeat(10)
+	begin
+		treg_sD[1] = 1'b0;
+		treg_sD[1] = #200000 1'b1;
+		# 200000;
+	end
+	treg_sD[1] = 1'b0;
+	treg_sD[1] = #200000 1'b1;
+	treg_sD[1] = #165000 1'bZ;
+	treg_sD[1] = #12830000 1'b0;
+	treg_sD[1] = #12770000 1'bZ;
+end 
+
+// sD[0]
+initial
+begin
+	treg_sD[0] = 1'b0;
+	treg_sD[0] = #12785000 1'bZ;
+	treg_sD[0] = #12840000 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	# 100000;
+	repeat(6)
+	begin
+		treg_sD[0] = 1'b0;
+		treg_sD[0] = #100000 1'b1;
+		# 100000;
+	end
+	treg_sD[0] = 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	treg_sD[0] = #100000 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	# 100000;
+	repeat(5)
+	begin
+		treg_sD[0] = 1'b0;
+		treg_sD[0] = #100000 1'b1;
+		# 100000;
+	end
+	treg_sD[0] = 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	treg_sD[0] = #100000 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	treg_sD[0] = #100000 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	treg_sD[0] = #100000 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	# 100000;
+	repeat(5)
+	begin
+		treg_sD[0] = 1'b0;
+		treg_sD[0] = #100000 1'b1;
+		# 100000;
+	end
+	treg_sD[0] = 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	treg_sD[0] = #100000 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	# 100000;
+	repeat(6)
+	begin
+		treg_sD[0] = 1'b0;
+		treg_sD[0] = #100000 1'b1;
+		# 100000;
+	end
+	treg_sD[0] = 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	treg_sD[0] = #100000 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	# 100000;
+	repeat(6)
+	begin
+		treg_sD[0] = 1'b0;
+		treg_sD[0] = #100000 1'b1;
+		# 100000;
+	end
+	treg_sD[0] = 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	treg_sD[0] = #100000 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	# 100000;
+	repeat(22)
+	begin
+		treg_sD[0] = 1'b0;
+		treg_sD[0] = #100000 1'b1;
+		# 100000;
+	end
+	treg_sD[0] = 1'b0;
+	treg_sD[0] = #100000 1'b1;
+	treg_sD[0] = #65000 1'bZ;
+	treg_sD[0] = #12830000 1'b0;
+	treg_sD[0] = #12770000 1'bZ;
+end 
+endmodule
